@@ -19,15 +19,17 @@ def get_info_of_page_hh(url_hh, page, language):
               'period': 30, 'page': page, 'per_page': 100}
     response = requests.get(url_hh, params=params)
     response.raise_for_status()
-    vacancies_found = response.json()['found']
+    response_json = response.json()
+    vacancies_found = response_json['found']
     average_salary = 0
     vacancies_processed = 0
-    for vacancy in response.json()['items']:
+    for vacancy in response_json['items']:
         predict = predict_rub_salary_hh(vacancy)
         if predict != 0:
             vacancies_processed += 1
         average_salary += predict
-    average_salary = average_salary / vacancies_processed
+    if vacancies_processed != 0:
+        average_salary = average_salary / vacancies_processed
     result = {
         'vacancies_found': vacancies_found,
         'vacancies_processed': vacancies_processed,
@@ -49,7 +51,7 @@ def get_results_hh(url_hh, languages, amount_of_pages):
                 vacancies_processed += page_result['vacancies_processed']
                 average_salary += page_result['average_salary']
                 found_pages += 1
-            except:
+            except requests.exceptions.HTTPError:
                 break
         average_salary = int(average_salary / found_pages)
         result = {
