@@ -29,7 +29,7 @@ def get_info_of_page_sj(url_sj, headers_sj, page, language):
         predict = predict_rub_salary_sj(vacancy)
         if predict != 0:
             vacancies_processed += 1
-        average_salary += predict
+            average_salary += predict
     if vacancies_processed != 0:
         average_salary = average_salary / vacancies_processed
     result = {
@@ -56,7 +56,7 @@ def get_results_sj(url_sj, headers_sj, languages, amount_of_pages):
                 average_salary += page_result['average_salary']
                 vacancies_found += page_result['vacancies_found']
                 found_pages += 1
-            except:
+            except requests.exceptions.HTTPError:
                 break
         if found_pages != 0:
             average_salary = average_salary / found_pages
