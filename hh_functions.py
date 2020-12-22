@@ -19,11 +19,11 @@ def get_info_of_page_hh(url_hh, page, language):
               'period': 30, 'page': page, 'per_page': 100}
     response = requests.get(url_hh, params=params)
     response.raise_for_status()
-    response_json = response.json()
-    vacancies_found = response_json['found']
+    vacancies = response.json()
+    vacancies_found = vacancies['found']
     average_salary = 0
     vacancies_processed = 0
-    for vacancy in response_json['items']:
+    for vacancy in vacancies['items']:
         predict = predict_rub_salary_hh(vacancy)
         if predict != 0:
             vacancies_processed += 1
